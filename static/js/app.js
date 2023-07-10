@@ -1,52 +1,29 @@
 //create plot displays for belly button biodiversity data
-
-function init() {
-    let selector = d3.select("#selDataset");
-  
-    //create samples from samples data file 
-    d3.json("samples.json").then((data) => {
-        let sampleIDs = data.names;
-        console.log(data)
-        for (let i = 0; i < sampleIDs.length; i++){
-            selector
-            .append('option')
-            .text(sampleIDs[i])
-            .property('value', sampleIDs[i]);
-        }
-        //build first plot with first sample 
-        let firstSample = sampleIDs[0];
-        //buildCharts(firstSample);
-        getData(firstSample);
-    });
-  }
-
-
-  //repeat for other sample IDs when selected from drop down 
-  function selectSample(nextID) {
-    //buildCharts(nextID); THIS
-    getData(nextID);
-  }
-
 function getData(sample) {
+    d3.json("../samples.json").then((data) => {
     let metadata = data.metadata; 
     //filter and specify data for specific sample ID number 
-    let resultArray = metadata.filter(sampleObj => sampleObj.id ==sample);
+    let resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
     let resultID = resultArray[0];
     //select panel with the sample ID 
-    let panel = d3.select('#sample-metadata');
-    panel.html(''); 
-
+    let PANEL = d3.select('#sample-metadata');
+    PANEL.html(''); 
+    //match value data in the demographics table 
     for (r in resultID) {
-        panel.append('h6').text(`${r.toUpperCase()}: ${resultID[r]}`);
+        PANEL.append('h6').text(`${r.toUpperCase()}: ${resultID[r]}`);
     };
-  }
+  });
+}
 
-
-
+//repeat for other sample IDs when selected from drop down 
+function optionChanged(nextID) {
+    //createCharts(nextID);
+    getData(nextID);
+}
 
 // function to make the charts to display on dashboard panel
 function createCharts(sample) {
-    d3.json('samples.json').then((data) => {
+    d3.json('../samples.json').then((data) => {
         let sampleIDs = data.samples;
         // get the sample id of interest to plot 
         let sampleOfInterest = sampleIDs.filter(sampleObj => sampleObj.id == sample);
@@ -82,5 +59,27 @@ function createCharts(sample) {
     })
 }
 
-  // Initialize and display the dashboard
-  init();
+function init() {
+    let selector = d3.select("#selDataset");
+    //create samples from samples data file 
+    d3.json("../samples.json").then((data) => {
+        let sampleIDs = data.names;
+        
+        console.log(data);
+
+        for (let i = 0; i < sampleIDs.length; i++) {
+            selector
+                .append('option')
+                .text(sampleIDs[i])
+                .property('value', sampleIDs[i]);
+        };
+
+        //build first plot with first sample 
+        let firstSample = sampleIDs[0];
+        getData(firstSample);
+        //createCharts(firstSample);
+    });
+}
+
+//initialize belly button data dashboard
+init();
