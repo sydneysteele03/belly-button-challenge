@@ -39,4 +39,8 @@ Update all the plots when a new sample is selected. Additionally, you are welcom
 
 hw
 
+<<<<<<< HEAD
 Deploy your app to a free static page hosting service, such as GitHub Pages. Submit the links to your deployment and your GitHub repo. Ensure that your repository has regular commits and a thorough README.md file
+=======
+Deploy your app to a free static page hosting service, such as GitHub Pages. Submit the links to your deployment and your GitHub repo. Ensure that your repository has regular commits and a thorough README.md file
+>>>>>>> db79176c39b8a79fd5c04be3123af8f9d0f8654b
