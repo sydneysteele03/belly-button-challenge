@@ -1,5 +1,6 @@
 # belly-button-challenge
 Module 14 Challenge: Belly Button Biodiversity Dataset Analysis
+Goal: ![image](https://github.com/sydneysteele03/belly-button-challenge/assets/126841347/cdb21491-1a7d-4aad-9956-fb525d39c01a)
 
 Complete the following steps:
 
