@@ -32,3 +32,5 @@ Bubble Chart
 Display the sample metadata, i.e., an individual's demographic information.
 
 Display each key-value pair from the metadata JSON object somewhere on the page.
+
+guidance used for assignment from online github: https://github.com/g626s/Plotly-Belly-Button-Biodiversity/blob/main/static/charts.js
