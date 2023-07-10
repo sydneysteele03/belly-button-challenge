@@ -1,6 +1,6 @@
 //create plot displays for belly button biodiversity data
 function getData(sample) {
-    d3.json("../samples.json").then((data) => {
+    d3.json("https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json").then((data) => {
     let metadata = data.metadata; 
     //filter and specify data for specific sample ID number 
     let resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
@@ -23,7 +23,7 @@ function optionChanged(nextID) {
 
 // function to make the charts to display on dashboard panel
 function createCharts(sample) {
-    d3.json('../samples.json').then((data) => {
+    d3.json('https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json').then((data) => {
         let sampleIDs = data.samples;
         // get the sample id of interest to plot 
         let sampleOfInterest = sampleIDs.filter(sampleObj => sampleObj.id == sample);
@@ -62,7 +62,7 @@ function createCharts(sample) {
 function init() {
     let selector = d3.select("#selDataset");
     //create samples from samples data file 
-    d3.json("../samples.json").then((data) => {
+    d3.json("https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json").then((data) => {
         let sampleIDs = data.names;
         
         console.log(data);
