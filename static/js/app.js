@@ -1,85 +1,109 @@
-//create plot displays for belly button biodiversity data
-function getData(sample) {
-    d3.json("https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json").then((data) => {
-    let metadata = data.metadata; 
-    //filter and specify data for specific sample ID number 
-    let resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
-    let resultID = resultArray[0];
-    //select panel with the sample ID 
-    let PANEL = d3.select('#sample-metadata');
-    PANEL.html(''); 
-    //match value data in the demographics table 
-    for (r in resultID) {
-        PANEL.append('h6').text(`${r.toUpperCase()}: ${resultID[r]}`);
-    };
-  });
-}
-
-//repeat for other sample IDs when selected from drop down 
-function optionChanged(nextID) {
-    //createCharts(nextID);
-    getData(nextID);
-}
-
-// function to make the charts to display on dashboard panel
-function createCharts(sample) {
-    d3.json('https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json').then((data) => {
-        let sampleIDs = data.samples;
-        // get the sample id of interest to plot 
-        let sampleOfInterest = sampleIDs.filter(sampleObj => sampleObj.id == sample);
-        let resultArray = data.metadata.filter(sampleObj => sampleObj.id == sample);
-        //get the iD number 
-        let sampleNo = sampleOfInterest[0];
-        let result = resultArray[0];
-
-
-        //Create a bubble chart that displays each sample. Need the following variables for axis, markers, and text. 
-        let otu_ids = sampleNo.otu_ids;
-        let otu_labels = sampleNo.otu_labels;
-        let sample_values = sampleNo.sample_values;
-        
-
-        //create bar chart for the sample. 
-        let barChartData = [{
-            type: 'bar',
-            x: sample_values.slice(0, 10).reverse(),
-            y: otu_ids.slice(0, 10).map(otuId => `OTU: ${otuId}`).reverse(),
-            orientation: 'h',
-            text: otu_lables.slice(0,10).reverse()
-        }];
-        let barChartLayout = {
-            title: "Top 10 Bacteria Cultur OTUs Found in Sample",
-            margin: {t: 30, l: 150}
-        };
-        //plot the data on bar chart 
-        Plotly.newPlot('bar', barChartData, barChartLayout);
-        
-
-        //create the bubble chart for data:
-    })
-}
+//create plots for belly button biodiversity data:
 
 function init() {
-    let selector = d3.select("#selDataset");
-    //create samples from samples data file 
-    d3.json("https://git.bootcampcontent.com/University-of-Oregon/UofO-VIRT-DATA-PT-03-2023-U-LOLC/-/blob/main/14-Interactive-Visualizations/Homework/Starter_Code/data/samples.json").then((data) => {
-        let sampleIDs = data.names;
-        
+    let dropdown = d3.select("#selDataset");
+    //create dropdown using sample ID numbers 
+    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json").then((data) => {
         console.log(data);
-
-        for (let i = 0; i < sampleIDs.length; i++) {
-            selector
-                .append('option')
-                .text(sampleIDs[i])
-                .property('value', sampleIDs[i]);
+        let sampleIDs = data.names;
+        // loop through sample IDs to add each number 
+        for (let i = 0; i < sampleIDs.length; i++){
+            dropdown.append("option").text(sampleIDs[i]).property("value", sampleIDs[i]);
         };
-
-        //build first plot with first sample 
+        //build first plot using the first sample number. use selectSample to do the rest. 
         let firstSample = sampleIDs[0];
-        getData(firstSample);
-        //createCharts(firstSample);
+        createBarChart(firstSample);
+        createBubbleChart(firstSample);
+        demographicInfo(firstSample);
+    });
+}
+//repeat for other sample IDs
+function selectSample(nextID) {
+    createBarChart(nextID);
+    createBubbleChart(nextID);
+    demographicInfo(nextID);
+}
+
+
+//create the demographics table for each sample ID on dropdown menu
+function demographicInfo(sample) {
+    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json").then((data) => {
+      let metadata = data.metadata;
+      //filter data for the specific sample ID no. 
+      let resultArray = metadata.filter(sampleObj => sampleObj.id == sample);
+      let result = resultArray[0];
+      //select the demographic data from the dropdown with the sample ID of interest 
+      let demographics = d3.select("#sample-metadata");
+      //need this to reset the table
+      demographics.html("");
+  
+      //get the values for each ID to match in the table info for rach sample
+      for (r in result) {
+        demographics.append("h6").text(`${r.toUpperCase()}: ${result[r]}`);
+      };
     });
 }
 
-//initialize belly button data dashboard
+
+//create the bar chart for top 10 OTUs
+  function createBarChart(sample) {
+    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json").then((data) => {
+      let sampleIDs = data.samples;
+      //filter data for specific sample ID no. 
+      let resultArray = sampleIDs.filter(sampleObj => sampleObj.id == sample);
+      let result = resultArray[0];
+      //need these variables for the charts per instructions 
+      let otu_ids = result.otu_ids;
+      let otu_labels = result.otu_labels;
+      let sample_values = result.sample_values;
+
+      // info for how bar chart will look 
+      let chartSpecs = [
+        {
+          y: otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse(),
+          x: sample_values.slice(0, 10).reverse(),
+          text: otu_labels.slice(0, 10).reverse(),
+          type: "bar",
+          orientation: "h",
+        }];
+      //plot the bar chart using chartSpecs
+      Plotly.newPlot("bar", chartSpecs, {title: "Top 10 Microbial Species (OTUs) Found in Sample", xaxis: {title: "Sample Values"}});
+    });
+  }
+
+  
+  //make the bubble chart to display OTU data for each sample
+  function createBubbleChart(sample) {
+    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json").then((data) => {
+        let sampleIDs = data.samples;
+        //filter data for specific sample ID no. 
+        let resultArray = sampleIDs.filter(sampleObj => sampleObj.id == sample);
+        let result = resultArray[0];
+        //need these variables for the charts per instructions 
+        let otu_ids = result.otu_ids;
+        let otu_labels = result.otu_labels;
+        let sample_values = result.sample_values;
+
+        //chart layout info for bubble chart 
+        let dataSpecs = [{
+            x: otu_ids,
+            y: sample_values,
+            text: otu_labels,
+            mode: "markers",
+            marker: {
+            size: sample_values,
+            color: otu_ids,
+            }
+        }];
+        let chartSpecs = {
+            title: "Bubble Chart of Microbial Species (OTUs) Found in Sample",
+            xaxis: {title: "OTU ID"},
+            yaxis: {title: "Sample Values"}
+        };
+        Plotly.newPlot("bubble", dataSpecs, chartSpecs);
+    });
+  }
+  
+// Initialize the belly button dashboard
 init();
+  
